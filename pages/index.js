@@ -15,6 +15,7 @@ import {
   VStack,
   Text,
   Stack,
+  HStack,
 } from "@chakra-ui/react";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -23,10 +24,15 @@ import Webcam from "react-webcam";
 import { FaTimes } from "react-icons/fa";
 
 export default function Home() {
+  // TODO:
+  // [x] Make the capture button appear slowly
+  // [x] Able to show toast if no camera
+
   const [selfPhoto, setSelfPhoto] = useState("");
   const [selectedSelfPhoto, setSelectedSelfPhoto] = useState("");
   const [selfMode, setSelfMode] = useState(false);
   const [dataFound, setDataFound] = useState(false);
+  const [disableUntilWebcam, setDisableUntilWebcam] = useState(true);
 
   // WEBCAM OPEN
   const webcamRef = useRef(null);
@@ -60,6 +66,17 @@ export default function Home() {
   // MODAL OPEN
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  // USEEFFECT
+  useEffect(() => {
+    setDisableUntilWebcam(true);
+  }, [selectedSelfPhoto]);
+  useEffect(() => {
+    if (!isOpen) {
+      console.log("hello");
+      setDisableUntilWebcam(true);
+    }
+  }, [isOpen]);
+
   return (
     <Box
       bg={"white"}
@@ -68,7 +85,6 @@ export default function Home() {
       borderRadius='sm'
       px={{ base: "3", md: "10" }}
     >
-      {" "}
       <VStack spacing={6} alignItems={"left"}>
         <Text
           color={"#414143"}
@@ -106,11 +122,37 @@ export default function Home() {
             w={"32"}
             rounded={"full"}
           ></Box>
+          <Text
+            color={"#718096"}
+            fontSize={{ base: "xs", md: "sm" }}
+            fontWeight='light'
+          >
+            Upload photos of at least 1500 pixels (on the longest edge). And
+            keep the file's size no larger than 1 MB.
+          </Text>
+          <HStack
+            spacing={"4"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Button
+              w={{ base: "150px", md: "180px" }}
+              fontSize={{ base: "sm", md: "md" }}
+              colorScheme='blue'
+              variant='outline'
+              onClick={() => {
+                onOpen();
+                setTimeout(() => {
+                  setDisableUntilWebcam(false);
+                }, 3000);
+              }}
+            >
+              Take a Selfie
+            </Button>
+          </HStack>
         </VStack>
       </Stack>
-      <Button variant='outline' onClick={() => onOpen()}>
-        Take a Selfie
-      </Button>
+
       <SimpleGrid columns={{ base: 3, md: 3 }} spacing={2}>
         {selfMode && (
           <Box position='relative' className='add-photo' boxShadow='lg'>
@@ -146,6 +188,7 @@ export default function Home() {
           <ModalHeader>Modal Title</ModalHeader>
           <ModalCloseButton
             onClick={() => {
+              setDisableUntilWebcam(true);
               setSelectedSelfPhoto("");
               setSelfPhoto("");
               onClose();
@@ -172,6 +215,7 @@ export default function Home() {
                     setSelectedSelfPhoto("");
                     setSelfPhoto("");
                     onClose();
+                    setDisableUntilWebcam(true);
                   }}
                 >
                   Cancel
@@ -181,6 +225,9 @@ export default function Home() {
                   onClick={(e) => {
                     e.preventDefault();
                     setSelectedSelfPhoto("");
+                    setTimeout(() => {
+                      setDisableUntilWebcam(false);
+                    }, 3000);
                   }}
                 >
                   Retake Image
@@ -203,6 +250,7 @@ export default function Home() {
                   capture(e);
                 }}
                 color={"black"}
+                isDisabled={disableUntilWebcam}
               >
                 Capture
               </Button>
