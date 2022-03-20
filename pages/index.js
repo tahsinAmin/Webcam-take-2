@@ -35,6 +35,15 @@ export default function Home() {
   const [disableUntilWebcam, setDisableUntilWebcam] = useState(true);
 
   // WEBCAM OPEN
+
+  function detectWebcam(callback) {
+    let md = navigator.mediaDevices;
+    if (!md || !md.enumerateDevices) return callback(false);
+    md.enumerateDevices().then((devices) => {
+      callback(devices.some((device) => "videoinput" === device.kind));
+    });
+  }
+
   const webcamRef = useRef(null);
 
   const [show, setShow] = React.useState(false);
@@ -141,10 +150,22 @@ export default function Home() {
               colorScheme='blue'
               variant='outline'
               onClick={() => {
-                onOpen();
-                setTimeout(() => {
-                  setDisableUntilWebcam(false);
-                }, 3000);
+                detectWebcam(function (hasWebcam) {
+                  if (hasWebcam) {
+                    onOpen();
+                    setTimeout(() => {
+                      setDisableUntilWebcam(false);
+                    }, 3000);
+                  } else {
+                    onClose();
+                    toast({
+                      title: "Camera missing!",
+                      status: "error",
+                      duration: 4000,
+                      isClosable: true,
+                    });
+                  }
+                });
               }}
             >
               Take a Selfie
