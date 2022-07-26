@@ -19,12 +19,8 @@ import {
   Center,
   Progress,
 } from "@chakra-ui/react";
-import { FaTimes } from "react-icons/fa";
-import {
-  addDriverLicenseAction,
-  getAllDriverLicenseAction,
-} from "../../state/action/LicenseAction";
-import { useDispatch, useSelector } from "react-redux";
+import { FaBeer } from "react-icons/fa";
+import { CloseIcon } from "@chakra-ui/icons";
 
 export default function DriverLicenseVerify() {
   const [dataFound, setDataFound] = useState(false);
@@ -119,12 +115,7 @@ export default function DriverLicenseVerify() {
 
   const checkFileSize = (e) => {
     let file = e.target.files[0];
-    // DON'T REMOVE THIS CODE
-    // console.log("file info", file);
-    // let img = new Image();
-    // img.onload = function () {
-    //   alert(this.width + " " + this.height);
-    // };
+
     if (file.size > 1000000) {
       toast({
         title: "File size is greater than 1MB!",
@@ -252,6 +243,7 @@ export default function DriverLicenseVerify() {
       borderRadius='sm'
       px={{ base: "3", md: "10" }}
     >
+      
       <VStack spacing={6} alignItems={"left"}>
         <Text
           color={"#414143"}
@@ -259,6 +251,7 @@ export default function DriverLicenseVerify() {
           fontWeight='bold'
         >
           Driving License Verification
+          <FaBeer color='black' />
         </Text>
         <Text
           color={"#718096"}
@@ -343,73 +336,75 @@ export default function DriverLicenseVerify() {
               Or
             </Text>
 
-            {!selfMode && (
-              <Button
-                w={{ base: "150px", md: "180px" }}
-                fontSize={{ base: "sm", md: "md" }}
-                colorScheme='blue'
-                variant='outline'
-                onClick={handleSelfPhotoUpload}
-                isDisabled={webcamEnabled}
-              >
-                Upload from drive
-                <Input
-                  hidden
-                  type={"file"}
-                  accept='image/*'
-                  ref={inputSelfPhoto}
-                  onChange={changeSelfPhotoHandler}
-                ></Input>
-              </Button>
-            )}
+            <>
+              {!selfMode && (
+                <Button
+                  w={{ base: "150px", md: "180px" }}
+                  fontSize={{ base: "sm", md: "md" }}
+                  colorScheme='blue'
+                  variant='outline'
+                  onClick={handleSelfPhotoUpload}
+                  isDisabled={webcamEnabled}
+                >
+                  Upload from drive
+                  <Input
+                    hidden
+                    type={"file"}
+                    accept='image/*'
+                    ref={inputSelfPhoto}
+                    onChange={changeSelfPhotoHandler}
+                  ></Input>
+                </Button>
+              )}
 
-            {selfMode && !frontMode && (
-              <Button
-                w={{ base: "150px", md: "180px" }}
-                fontSize={{ base: "sm", md: "md" }}
-                colorScheme='blue'
-                variant='outline'
-                onClick={handleDLFrontPhotoUpload}
-              >
-                Upload from drive
-                <Input
-                  hidden
-                  type={"file"}
-                  accept='image/*'
-                  ref={inputDLFrontPhoto}
-                  onChange={changeDLFrontPhotoHandler}
-                ></Input>
-              </Button>
-            )}
-            {selfMode && frontMode && !backMode && (
-              <Button
-                w={{ base: "150px", md: "180px" }}
-                fontSize={{ base: "sm", md: "md" }}
-                colorScheme='blue'
-                variant='outline'
-                onClick={handleDLBackPhotoUpload}
-              >
-                Upload from drive
-                <Input
-                  hidden
-                  type={"file"}
-                  accept='image/*'
-                  ref={inputDLBackPhoto}
-                  onChange={changeDLBackPhotoHandler}
-                ></Input>
-              </Button>
-            )}
-            {selfMode && frontMode && backMode && (
-              <Button
-                w={{ base: "150px", md: "180px" }}
-                fontSize={{ base: "sm", md: "md" }}
-                colorScheme='blue'
-                variant='outline'
-                isDisabled='true'
-              >
-                Upload from drive
-              </Button>
-            )}
+              {selfMode && !frontMode && (
+                <Button
+                  w={{ base: "150px", md: "180px" }}
+                  fontSize={{ base: "sm", md: "md" }}
+                  colorScheme='blue'
+                  variant='outline'
+                  onClick={handleDLFrontPhotoUpload}
+                >
+                  Upload from drive
+                  <Input
+                    hidden
+                    type={"file"}
+                    accept='image/*'
+                    ref={inputDLFrontPhoto}
+                    onChange={changeDLFrontPhotoHandler}
+                  ></Input>
+                </Button>
+              )}
+              {selfMode && frontMode && !backMode && (
+                <Button
+                  w={{ base: "150px", md: "180px" }}
+                  fontSize={{ base: "sm", md: "md" }}
+                  colorScheme='blue'
+                  variant='outline'
+                  onClick={handleDLBackPhotoUpload}
+                >
+                  Upload from drive
+                  <Input
+                    hidden
+                    type={"file"}
+                    accept='image/*'
+                    ref={inputDLBackPhoto}
+                    onChange={changeDLBackPhotoHandler}
+                  ></Input>
+                </Button>
+              )}
+              {selfMode && frontMode && backMode && (
+                <Button
+                  w={{ base: "150px", md: "180px" }}
+                  fontSize={{ base: "sm", md: "md" }}
+                  colorScheme='blue'
+                  variant='outline'
+                  isDisabled='true'
+                >
+                  Upload from drive
+                </Button>
+              )}
+            </>
           </HStack>
           {webcamEnabled && (
             <HStack spacing='15px' justify='center'>
@@ -491,7 +486,7 @@ export default function DriverLicenseVerify() {
                   <Box position='relative' className='add-photo' boxShadow='lg'>
                     {!dataFound && (
                       <Flex className='icon-delete'>
-                        <FaTimes
+                        <CloseIcon
                           onClick={() => (
                             setSelectedSelfPhoto(""),
                             setSelfMode(false),
@@ -518,7 +513,7 @@ export default function DriverLicenseVerify() {
                   <Box position='relative' className='add-photo' boxShadow='lg'>
                     {!dataFound && (
                       <Flex className='icon-delete'>
-                        <FaTimes
+                        <CloseIcon
                           onClick={() => (
                             setSelectedDLFrontPhoto(""), setFrontMode(false)
                           )}
@@ -544,7 +539,7 @@ export default function DriverLicenseVerify() {
                   <Box position='relative' className='add-photo' boxShadow='lg'>
                     {!dataFound && (
                       <Flex className='icon-delete'>
-                        <FaTimes
+                        <CloseIcon
                           onClick={() => (
                             setSelectedDLBackPhoto(""), setBackMode(false)
                           )}
